@@ -1,4 +1,4 @@
-#include "math.cpp"
+#include "linear_math.h"
 
 int main()
 {
