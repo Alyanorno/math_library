@@ -8,9 +8,13 @@
 
 int main()
 {
-	add(2,5);
+	std::cout << __LINE__ << std::endl 
+		  << __FILE__ << std::endl 
+		  << __DATE__ << std::endl 
+		  << __TIME__ << std::endl << std::endl;
 
-	linear_math::Vector<3> v1( 3, 23, 50);
+	linear_math::Vector<3> v1( 666, 23, 50 );
+	v1[0] = 3;
 	std::cout << "v1" << std::endl;
 	PRINT_VECTOR( v1, 3 );
 
@@ -24,5 +28,6 @@ int main()
 	v1.Normalize();
 	std::cout << "Normalize " << "v1" << std::endl;
 	PRINT_VECTOR( v1, 3 );
+
 	return 0;
 }
