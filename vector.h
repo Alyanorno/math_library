@@ -23,20 +23,25 @@ public: \
 	OPERATOR(/, N, T) \
 	T values[N]
 
-// Operators only defined for N = 3
 #define OPERATOR( OPERATION, N, T ) \
 	/* Vector of same size */ \
-	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
-		{ return Vector<N,T>( v1[0] OPERATION v2[0], \
-				      v1[1] OPERATION v2[1], \
-				      v1[2] OPERATION v2[2] ); } \
+	friend Vector<N,T>& operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
+	{ \
+		T array[N]; \
+		for(int i(0); i < N; i++ ) \
+			tempVector[i] = v1[i] OPERATION v2[i]; \
+		return Vector<N,T>( array ); \
+	} \
 	void operator OPERATION=( Vector<N,T>& v ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= v[i]; } \
 	/* Scalar */ \
-	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, T s ) \
-		{ return Vector<N,T>( v1[0] OPERATION s, \
-				      v1[1] OPERATION s, \
-				      v1[2] OPERATION s ); } \
+	friend Vector<N,T>& operator OPERATION( Vector<N,T>& v1, T s ) \
+	{ \
+		T array[N]; \
+		for(int i(0); i < N; i++ ) \
+			tempVector[i] = v1[i] OPERATION s; \
+		return Vector<N,T>( array ); \
+	} \
 	void operator OPERATION=( T s ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= s; }
 
@@ -59,11 +64,13 @@ namespace linear_math
 	namespace length
 		{ LOOP( T v[], v, v[N] * v[N], +, v[0] * v[0] ) }
 
+
 	template< int N, typename T = float >
 	struct Vector
 	{
 		DEFAULT( N, T);
 	};
+
 
 	template< typename T >
 	struct Vector<4, T>
