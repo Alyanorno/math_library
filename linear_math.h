@@ -1,4 +1,4 @@
 #pragma once
 #include "vector.h"
-#include "matric.h"
+#include "matrix.h"
 

@@ -4,8 +4,9 @@
 
 #define DEFAULT( N, T ) \
 public: \
-	Vector() { for(int i(0); i < N; i++) values[i] = 0; } \
+	Vector() {} \
 	Vector( T array[] ) { for(int i(0); i < N; i++) values[i] = array[i]; } \
+	void Zero() { for(int i(0); i < N; i++) values[i] = 0; } \
 	void Normalize() \
 	{ \
 		T length = Length(); \
@@ -27,43 +28,43 @@ public: \
 	/* Vector of same size */ \
 	friend Vector<N,T>& operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
 	{ \
-		T array[N]; \
+		Vector<N,T> tempVector(); \
 		for(int i(0); i < N; i++ ) \
 			tempVector[i] = v1[i] OPERATION v2[i]; \
-		return Vector<N,T>( array ); \
+		return tempVector; \
 	} \
 	void operator OPERATION=( Vector<N,T>& v ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= v[i]; } \
 	/* Scalar */ \
 	friend Vector<N,T>& operator OPERATION( Vector<N,T>& v1, T s ) \
 	{ \
-		T array[N]; \
+		Vector<N,T> tempVector(); \
 		for(int i(0); i < N; i++ ) \
 			tempVector[i] = v1[i] OPERATION s; \
-		return Vector<N,T>( array ); \
+		return tempVector; \
 	} \
 	void operator OPERATION=( T s ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= s; }
 
-#define LOOP( TYPE_ARGS, ARGS, FUNCTION, OPERATION, ZERO ) \
+#define LOOP( TYPE_ARGS, ARGS, FUNCTION, ZERO ) \
 	template< int N, typename T = float > \
 	struct Loop \
 		{ static inline T function( TYPE_ARGS ) \
-			{ return FUNCTION OPERATION Loop<N-1, T>::function( ARGS ); }}; \
+			{ FUNCTION Loop<N-1, T>::function( ARGS ); }}; \
 	template< typename T > \
 	struct Loop<0, T> \
 		{ static inline T function( TYPE_ARGS ) \
-			{ return ZERO; }};
+			{ ZERO; }};
 #define COMMA ,
 
 
 namespace linear_math
 {
 	namespace dot
-		{ LOOP( T x[] COMMA T y[], x COMMA y, x[N] * y[N], +, x[0] * y[0] ) }
+		{ LOOP( T x[] COMMA T y[], x COMMA y, return x[N] * y[N] +, return x[0] * y[0] ) }
 	namespace length
-		{ LOOP( T v[], v, v[N] * v[N], +, v[0] * v[0] ) }
-
+		{ LOOP( T v[], v, return v[N] * v[N] +, return v[0] * v[0] ) }
+		
 
 	template< int N, typename T = float >
 	struct Vector
