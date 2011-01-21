@@ -57,5 +57,8 @@ int main()
 	std::cout << "m1 * m2" << std::endl;
 	PRINT_MATRIX( result, 2, 2 );
 
+	linear_math::Matrix<3> m;
+	m.Determinant();
+	
 	return 0;
 }
