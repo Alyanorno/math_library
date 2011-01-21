@@ -26,9 +26,9 @@ public: \
 
 #define OPERATOR( OPERATION, N, T ) \
 	/* Vector of same size */ \
-	friend Vector<N,T>& operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
+	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
 	{ \
-		Vector<N,T> tempVector(); \
+		Vector<N,T> tempVector; \
 		for(int i(0); i < N; i++ ) \
 			tempVector[i] = v1[i] OPERATION v2[i]; \
 		return tempVector; \
@@ -36,9 +36,9 @@ public: \
 	void operator OPERATION=( Vector<N,T>& v ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= v[i]; } \
 	/* Scalar */ \
-	friend Vector<N,T>& operator OPERATION( Vector<N,T>& v1, T s ) \
+	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, T s ) \
 	{ \
-		Vector<N,T> tempVector(); \
+		Vector<N,T> tempVector; \
 		for(int i(0); i < N; i++ ) \
 			tempVector[i] = v1[i] OPERATION s; \
 		return tempVector; \

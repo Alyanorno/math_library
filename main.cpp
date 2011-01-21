@@ -2,16 +2,15 @@
 #include <iostream>
 
 #define PRINT_VECTOR( v, N ) do { \
-	for( int i(0); i < N; i++ ) \
-		std::cout << v[i] << std::endl; \
+	for( int I(0); I < N; I++ ) \
+		std::cout << v[I] << std::endl; \
 	std::cout << std::endl; } while(0)
 
 #define PRINT_MATRIX( m, M, N ) do { \
 	for( int i(0); i < N; i++ ) \
 	{ \
-		for( int j(0); j < M; j++ ) \
-			std::cout << m[i][j] << "   "; \
-		std::cout << std::endl; \
+		std::cout << "Vector [" << i << "]" << std::endl; \
+		PRINT_VECTOR( m[i], M ); \
 	} \
 	std::cout << std::endl; } while(0)
 
@@ -38,20 +37,25 @@ int main()
 	std::cout << "Normalize " << "v1" << std::endl;
 	PRINT_VECTOR( v1, 3 );
 
-	linear_math::Matrix<3> m;
-	m.Identity();
-	std::cout << "Identity m" << std::endl;
-	PRINT_MATRIX( m, 3, 3 );
+	linear_math::Matrix<2> m1;
+	m1.Identity();
+	std::cout << "Identity m1" << std::endl;
+	PRINT_MATRIX( m1, 2, 2 );
 
-	m[0] = linear_math::Vector<3>( 2, 5, 7 );
-	m[1] = v2;
-	m[2] = linear_math::Vector<3>( 2, 5, 7 );
-	std::cout << "m" << std::endl;
-	PRINT_MATRIX( m, 3, 3 );
+	linear_math::Matrix<2> m2;
+	m1[0] = linear_math::Vector<2>( 2, 7 );
+	m1[1] = linear_math::Vector<2>( -3, 5 );
+	m2[0] = linear_math::Vector<2>( 10, 12 );
+	m2[1] = linear_math::Vector<2>( -8, -2 );
+	std::cout << "m1" << std::endl;
+	PRINT_MATRIX( m1, 2, 2 );
+	std::cout << "m2" << std::endl;
+	PRINT_MATRIX( m2, 2, 2 );
 	
-	m *= m;
-	std::cout << "m" << std::endl;
-	PRINT_MATRIX( m, 3, 3 );
+	linear_math::Matrix<2> result;
+	result = m1 * m2;
+	std::cout << "m1 * m2" << std::endl;
+	PRINT_MATRIX( result, 2, 2 );
 
 	return 0;
 }
