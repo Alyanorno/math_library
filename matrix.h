@@ -107,39 +107,49 @@ namespace linear_math
 		DEFAULT( M, N, T );
 	};
 
-	template < typename T >
-	struct Matrix<4,4,T>
-	{
-		DEFAULT( 4, 4, T );
-	public:
-		void Inverse() {}
-		void Rotate( Vector<4,T> v ) {}
-		void Scale( Vector<4,T> v ) {}
-		void Translate( Vector<4,T> v ) {}
-	};
 
 	template < typename T >
 	struct Matrix<3,3,T>
 	{
 		DEFAULT( 3, 3, T );
 	public:
-		void Inverse() {} /* NOT DONE */
-		void RotateX( T angle ) {} /* NOT DONE */
-		void RotateY( T angle ) {} /* NOT DONE */
-		void RotateZ( T angle ) {} /* NOT DONE */
-		void ScaleX( T scale ) 
-			{ columns[0][0] *= scale; }
-		void ScaleY( T scale )
-			{ columns[1][1] *= scale; }
-		void ScaleZ( T scale )
-			{ columns[2][2] *= scale; }
+#define MATRIX_A columns[0][0]
+#define MATRIX_B columns[1][0]
+#define MATRIX_C columns[2][0]
+#define MATRIX_D columns[0][1]
+#define MATRIX_E columns[1][1]
+#define MATRIX_F columns[2][1]
+#define MATRIX_G columns[0][2]
+#define MATRIX_H columns[1][2]
+#define MATRIX_K columns[2][2]
+		void Inverse()
+		{
+			result[0][0] = MATRIX_E * MATRIX_K - MATRIX_F * MATRIX_H;
+			result[0][1] = MATRIX_F * MATRIX_G - MATRIX_D * MATRIX_K;
+			result[0][2] = MATRIX_D * MATRIX_H - MATRIX_E * MATRIX_G;
+			result[1][0] = MATRIX_C * MATRIX_H - MATRIX_B * MATRIX_K;
+			result[1][1] = MATRIX_A * MATRIX_K - MATRIX_C * MATRIX_G;
+			result[1][2] = MATRIX_B * MATRIX_G - MATRIX_A * MATRIX_H;
+			result[2][0] = MATRIX_B * MATRIX_F - MATRIX_C * MATRIX_E;
+			result[2][1] = MATRIX_C * MATRIX_D - MATRIX_A * MATRIX_F;
+			result[2][2] = MATRIX_A * MATRIX_E - MATRIX_B * MATRIX_D;
+		}
 		T Determinant() 
-			{ return columns[0][0] * columns[1][1] * columns[2][2] + 
-				 columns[1][0] * columns[2][1] * columns[0][2] + 
-				 columns[2][0] * columns[0][1] * columns[1][2] -
-				 columns[2][0] * columns[1][1] * columns[0][2] -
-				 columns[1][0] * columns[0][1] * columns[2][2] -
-				 columns[0][0] * columns[2][1] * columns[1][2]; }
+			{ return MATRIX_A * MATRIX_E * MATRIX_K + 
+				 MATRIX_B * MATRIX_F * MATRIX_G + 
+				 MATRIX_C * MATRIX_D * MATRIX_H -
+				 MATRIX_C * MATRIX_E * MATRIX_C -
+				 MATRIX_B * MATRIX_D * MATRIX_K -
+				 MATRIX_A * MATRIX_F * MATRIX_H; }
+#undef MATRIX_A
+#undef MATRIX_B
+#undef MATRIX_C
+#undef MATRIX_D
+#undef MATRIX_E
+#undef MATRIX_F
+#undef MATRIX_G
+#undef MATRIX_H
+#undef MATRIX_K
 	};
 	
 	template < typename T >
@@ -147,13 +157,16 @@ namespace linear_math
 	{
 		DEFAULT( 2, 2, T );
 	public:
-		void Inverse() {} /* NOT DONE */
-		void RotateX( T angle ) {} /* NOT DONE */
-		void RotateY( T angle ) {} /* NOT DONE */
-		void ScaleX( T scale ) 
-			{ columns[0][0] *= scale; }
-		void ScaleY( T scale )
-			{ columns[1][1] *= scale; }
+		Matrix<2,2,T> Inverse()
+		{
+			Matrix<2,2,T> result;
+			T c = 1 / ( columns[1][0] * columns[1][1] - columns[0][0] * columns[0][1] );
+			result[0][0] = c * columns[1][1];
+			result[0][1] = c * -columns[0][1];
+			result[1][0] = c * -columns[1][0];
+			result[1][1] = c * columns[0][0];
+			return result;
+		}
 		T Determinant() 
 			{ return columns[0][0] * columns[1][1] - columns[0][1] * columns[1][0]; }
 	};

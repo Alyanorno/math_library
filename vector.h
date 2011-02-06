@@ -28,20 +28,20 @@ public: \
 	/* Vector of same size */ \
 	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
 	{ \
-		Vector<N,T> tempVector; \
+		Vector<N,T> result; \
 		for(int i(0); i < N; i++ ) \
-			tempVector[i] = v1[i] OPERATION v2[i]; \
-		return tempVector; \
+			result[i] = v1[i] OPERATION v2[i]; \
+		return result; \
 	} \
 	void operator OPERATION=( Vector<N,T>& v ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= v[i]; } \
 	/* Scalar */ \
 	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, T s ) \
 	{ \
-		Vector<N,T> tempVector; \
+		Vector<N,T> result; \
 		for(int i(0); i < N; i++ ) \
-			tempVector[i] = v1[i] OPERATION s; \
-		return tempVector; \
+			result[i] = v1[i] OPERATION s; \
+		return result; \
 	} \
 	void operator OPERATION=( T s ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= s; }
@@ -74,7 +74,7 @@ namespace linear_math
 
 
 	template< typename T >
-	struct Vector<4, T>
+	struct Vector<4,T>
 	{
 		DEFAULT( 4, T );
 	public:
@@ -88,7 +88,7 @@ namespace linear_math
 	};
 	
 	template< typename T >
-	struct Vector<3, T>
+	struct Vector<3,T>
 	{
 		DEFAULT( 3, T );
 	public:
@@ -98,11 +98,18 @@ namespace linear_math
 			values[1] = y;
 			values[2] = z;
 		}
-		Vector<3, T> Cross( Vector<3, T>* v ) {}
+		Vector<3,T> Cross( Vector<3, T>* v )
+		{
+			Vector<3,T> result;
+			result = values[1] * v[2] - values[2] * v[1];
+			result = values[2] * v[0] - values[0] * v[2];
+			result = values[0] * v[1] - values[1] * v[0];
+			return result;
+		}
 	};
 	
 	template< typename T >
-	struct Vector<2, T>
+	struct Vector<2,T>
 	{
 		DEFAULT( 2, T );
 	public:
