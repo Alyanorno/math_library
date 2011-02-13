@@ -98,12 +98,12 @@ namespace linear_math
 			values[1] = y;
 			values[2] = z;
 		}
-		Vector<3,T> Cross( Vector<3, T>* v )
+		Vector<3,T> Cross( Vector<3, T>& v )
 		{
 			Vector<3,T> result;
-			result = values[1] * v[2] - values[2] * v[1];
-			result = values[2] * v[0] - values[0] * v[2];
-			result = values[0] * v[1] - values[1] * v[0];
+			result[0] = values[1] * v[2] - values[2] * v[1];
+			result[1] = values[2] * v[0] - values[0] * v[2];
+			result[2] = values[0] * v[1] - values[1] * v[0];
 			return result;
 		}
 	};
