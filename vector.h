@@ -2,43 +2,21 @@
 #include <math.h>
 
 
-#define DEFAULT( N, T ) \
-public: \
-	Vector() {} \
-	Vector( T array[] ) { for(int i(0); i < N; i++) values[i] = array[i]; } \
-	void Zero() { for(int i(0); i < N; i++) values[i] = 0; } \
-	void Normalize() \
-	{ \
-		T length = Length(); \
-		for( int i(0); i < N; i++ ) \
-			values[i] /= length; \
-	} \
-	T Length() \
-		{ return sqrt( length::Loop<N-1, T>::function( values ) ); } \
-	T inline Dot( Vector<N,T>& v ) \
-		{ return dot::Loop<N-1, T>::function( values, v.values ); } \
-	T& operator[]( int n ) { return values[n]; } \
-	OPERATOR(+, N, T) \
-	OPERATOR(-, N, T) \
-	OPERATOR(*, N, T) \
-	OPERATOR(/, N, T) \
-	T values[N]
-
 #define OPERATOR( OPERATION, N, T ) \
 	/* Vector of same size */ \
-	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
+	friend VectorBase<N,T> operator OPERATION( VectorBase<N,T>& v1, VectorBase<N,T>& v2 ) \
 	{ \
-		Vector<N,T> result; \
+		VectorBase<N,T> result; \
 		for(int i(0); i < N; i++ ) \
 			result[i] = v1[i] OPERATION v2[i]; \
 		return result; \
 	} \
-	void operator OPERATION=( Vector<N,T>& v ) \
+	void operator OPERATION=( VectorBase<N,T>& v ) \
 		{ for( int i(0); i < N; i++ ) values[i] OPERATION= v[i]; } \
 	/* Scalar */ \
-	friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, T s ) \
+	friend VectorBase<N,T> operator OPERATION( VectorBase<N,T>& v1, T s ) \
 	{ \
-		Vector<N,T> result; \
+		VectorBase<N,T> result; \
 		for(int i(0); i < N; i++ ) \
 			result[i] = v1[i] OPERATION s; \
 		return result; \
@@ -66,18 +44,43 @@ namespace linear_math
 		{ LOOP( T v[], v, return v[N] * v[N] +, return v[0] * v[0] ) }
 		
 
-	template< int N, typename T = float >
-	struct Vector
+	namespace local
 	{
-		DEFAULT( N, T);
+		template< int N, typename T >
+		struct VectorBase
+		{
+			VectorBase() {}
+			void Zero() { for(int i(0); i < N; i++) values[i] = 0; }
+			void Normalize()
+			{
+				T length = Length();
+				for( int i(0); i < N; i++ )
+					values[i] /= length;
+			}
+			T Length()
+				{ return sqrt( length::Loop<N-1, T>::function( values ) ); }
+			T inline Dot( VectorBase<N,T>& v )
+				{ return dot::Loop<N-1, T>::function( values, v.values ); }
+			T& operator[]( int n ) { return values[n]; }
+			OPERATOR(+, N, T)
+			OPERATOR(-, N, T)
+			OPERATOR(*, N, T)
+			OPERATOR(/, N, T)
+			T values[N];
+		};
+	}
+	
+	template< int N, typename T = float >
+	struct Vector : local::VectorBase<N,T>
+	{
+		Vector() {}
 	};
 
 
 	template< typename T >
-	struct Vector<4,T>
+	struct Vector<4,T> : local::VectorBase<4,T>
 	{
-		DEFAULT( 4, T );
-	public:
+		Vector() {}
 		Vector( T x, T y, T z, T w )
 		{
 			values[0] = x;
@@ -88,10 +91,9 @@ namespace linear_math
 	};
 	
 	template< typename T >
-	struct Vector<3,T>
+	struct Vector<3,T> : local::VectorBase<3,T>
 	{
-		DEFAULT( 3, T );
-	public:
+		Vector() {}
 		Vector( T x, T y, T z ) 
 		{
 			values[0] = x;
@@ -109,10 +111,9 @@ namespace linear_math
 	};
 	
 	template< typename T >
-	struct Vector<2,T>
+	struct Vector<2,T> : local::VectorBase<2,T>
 	{
-		DEFAULT( 2, T );
-	public:
+		Vector() {}
 		Vector( T x, T y )
 		{
 			values[0] = x;
@@ -123,4 +124,3 @@ namespace linear_math
 #undef COMMA
 #undef LOOP
 #undef OPERATOR
-#undef DEFAULT
