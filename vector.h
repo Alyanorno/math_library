@@ -76,7 +76,7 @@ namespace linear_math
 	struct Vector : local::VectorBase<N,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, N*sizeof(T) ); }
+		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
 	};
 
 
@@ -84,7 +84,7 @@ namespace linear_math
 	struct Vector<4,T> : local::VectorBase<4,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, 4*sizeof(T) ); }
+		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
 		Vector( T x, T y, T z, T w )
 		{
 			values[0] = x;
@@ -98,7 +98,7 @@ namespace linear_math
 	struct Vector<3,T> : local::VectorBase<3,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, 3*sizeof(T) ); }
+		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
 		Vector( T x, T y, T z ) 
 		{
 			values[0] = x;
@@ -119,7 +119,7 @@ namespace linear_math
 	struct Vector<2,T> : local::VectorBase<2,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, 2*sizeof(T) ); }
+		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
 		Vector( T x, T y )
 		{
 			values[0] = x;

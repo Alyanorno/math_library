@@ -110,7 +110,7 @@ namespace linear_math
 	struct Matrix : local::MatrixBase< M, N, T >
 	{
 		Matrix() {}
-		Matrix( MatrixBase& m ) { memcpy( this, &m, M*N*sizeof(T) ); }
+		Matrix( MatrixBase& m ) { memcpy( this, &m, sizeof(this) ); }
 	};
 
 
@@ -118,7 +118,7 @@ namespace linear_math
 	struct Matrix<3,3,T> : local::MatrixBase< 3, 3, T >
 	{
 		Matrix() {}
-		Matrix( MatrixBase& m ) { memcpy( this, &m, 3*3*sizeof(T) ); }
+		Matrix( MatrixBase& m ) { memcpy( this, &m, sizeof(this) ); }
 #define MATRIX_A columns[0][0]
 #define MATRIX_B columns[1][0]
 #define MATRIX_C columns[2][0]
@@ -162,7 +162,7 @@ namespace linear_math
 	struct Matrix<2,2,T> : local::MatrixBase< 2, 2, T > 
 	{
 		Matrix() {}
-		Matrix( MatrixBase& m ) { memcpy( this, &m, 2*2*sizeof(T) ); }
+		Matrix( MatrixBase& m ) { memcpy( this, &m, sizeof(this) ); }
 		Matrix<2,2,T> Inverse()
 		{
 			Matrix<2,2,T> result;
