@@ -53,8 +53,8 @@ int main()
 	PRINT_MATRIX( m2, 2, 2 );
 	
 	linear_math::Matrix<2> result;
-	result = m1 * m2;
-	std::cout << "m1 * m2" << std::endl;
+	result = m1 + m2;
+	std::cout << "m1 + m2" << std::endl;
 	PRINT_MATRIX( result, 2, 2 );
 
 	linear_math::Matrix<3> m;

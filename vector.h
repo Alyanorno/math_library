@@ -60,12 +60,14 @@ namespace linear_math
 						result[i] = v1[i] OPERATION s; \
 					return result; \
 				} \
+				friend VectorBase<N,T> operator OPERATION( T s, VectorBase<N,T>& v1 ) \
+				{ \
+					return v1 operator s; \
+				} \
 				void operator OPERATION=( T s ) \
 					{ for( int i(0); i < N; i++ ) values[i] OPERATION= s; }
 			OPERATOR(+)
 			OPERATOR(-)
-			OPERATOR(*)
-			OPERATOR(/)
 			#undef OPERATOR
 
 			T values[N];
