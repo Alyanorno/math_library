@@ -14,12 +14,12 @@ namespace linear_math
 			template< typename T > \
 			struct Loop<0, T> \
 				{ static inline T function( TYPE_ARGS ) \
-					{ ZERO; }};
+					{ ZERO }};
 		#define COMMA ,
 		namespace dot
-			{ LOOP( T x[] COMMA T y[], x COMMA y, return x[N] * y[N] +, return x[0] * y[0] ) }
+			{ LOOP( T x[] COMMA T y[], x COMMA y, return x[N] * y[N] +, return x[0] * y[0]; ) }
 		namespace length
-			{ LOOP( T v[], v, return v[N] * v[N] +, return v[0] * v[0] ) }
+			{ LOOP( T v[], v, return v[N] * v[N] +, return v[0] * v[0]; ) }
 		#undef COMMA
 		#undef LOOP
 		
@@ -68,6 +68,8 @@ namespace linear_math
 					{ for( int i(0); i < N; i++ ) values[i] OPERATION= s; }
 			OPERATOR(+)
 			OPERATOR(-)
+			OPERATOR(*)
+			OPERATOR(/)
 			#undef OPERATOR
 
 			T values[N];
@@ -78,7 +80,7 @@ namespace linear_math
 	struct Vector : local::VectorBase<N,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
+		Vector( local::VectorBase<N,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
 	};
 
 
@@ -86,7 +88,7 @@ namespace linear_math
 	struct Vector<4,T> : local::VectorBase<4,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
+		Vector( local::VectorBase<4,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
 		Vector( T x, T y, T z, T w )
 		{
 			values[0] = x;
@@ -100,8 +102,8 @@ namespace linear_math
 	struct Vector<3,T> : local::VectorBase<3,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
-		Vector( T x, T y, T z ) 
+		Vector( local::VectorBase<3,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
+		Vector( T x, T y, T z )
 		{
 			values[0] = x;
 			values[1] = y;
@@ -121,7 +123,7 @@ namespace linear_math
 	struct Vector<2,T> : local::VectorBase<2,T>
 	{
 		Vector() {}
-		Vector( VectorBase& v ) { memcpy( this, &v, sizeof(this) ); }
+		Vector( local::VectorBase<2,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
 		Vector( T x, T y )
 		{
 			values[0] = x;

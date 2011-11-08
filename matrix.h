@@ -1,6 +1,8 @@
 #pragma once
 #include "vector.h"
 #include <math.h>
+#include <iostream>
+#include <string>
 
 
 namespace linear_math
@@ -13,7 +15,7 @@ namespace linear_math
 			MatrixBase() {}
 			void Transpose()
 			{
-				for( int i(0); i < N; i++ )
+				for( int i(0); i < M; i++ )
 					for ( int j(1); j < N; j++ )
 					{
 						/* switch place */
@@ -38,8 +40,11 @@ namespace linear_math
 				friend MatrixBase<M,N,T> operator OPERATION( MatrixBase<M,N,T>& m1, MatrixBase<M,N,T>& m2 ) \
 				{ \
 					MatrixBase<M,N,T> result; \
-					for( int i(0); i < N; i++ ) \
-						result[i] = m1[i] OPERATION m2[i]; \
+					for( int i(0); i < M; i++ ) \
+						for( int j(0); j < N; j++ ) \
+							result[i][j] = m1[i][j] OPERATION m2[i][j]; \
+					result[0] = Vector<2>( 5, 2 );\
+					result[1] = Vector<2>( 1, 4 );\
 					return result; \
 				} \
 				void operator OPERATION=( MatrixBase<M,N,T>& m ) \
@@ -110,7 +115,7 @@ namespace linear_math
 	struct Matrix : local::MatrixBase< M, N, T >
 	{
 		Matrix() {}
-		Matrix( MatrixBase& m ) { memcpy( this, &m, sizeof(this) ); }
+		Matrix( local::MatrixBase<M,N,T>& m ) { memcpy( this, &m, sizeof(*this) ); }
 	};
 
 
@@ -118,7 +123,7 @@ namespace linear_math
 	struct Matrix<3,3,T> : local::MatrixBase< 3, 3, T >
 	{
 		Matrix() {}
-		Matrix( MatrixBase& m ) { memcpy( this, &m, sizeof(this) ); }
+		Matrix( local::MatrixBase<3,3,T>& m ) { memcpy( this, &m, sizeof(*this) ); }
 #define MATRIX_A columns[0][0]
 #define MATRIX_B columns[1][0]
 #define MATRIX_C columns[2][0]
@@ -162,7 +167,7 @@ namespace linear_math
 	struct Matrix<2,2,T> : local::MatrixBase< 2, 2, T > 
 	{
 		Matrix() {}
-		Matrix( MatrixBase& m ) { memcpy( this, &m, sizeof(this) ); }
+		Matrix( local::MatrixBase<2,2,T>& m ) { memcpy( this, &m, sizeof(*this) ); }
 		Matrix<2,2,T> Inverse()
 		{
 			Matrix<2,2,T> result;
