@@ -24,7 +24,7 @@ namespace linear_math
 		#undef LOOP
 		
 	
-		template< int N, typename T >
+		template< template < int N, typename T > class Vector, int N, typename T >
 		struct VectorBase
 		{
 			VectorBase() {}
@@ -37,30 +37,30 @@ namespace linear_math
 			}
 			T Length()
 				{ return sqrt( length::Loop<N-1, T>::function( values ) ); }
-			T inline Dot( VectorBase<N,T>& v )
+			T inline Dot( Vector<N,T>& v )
 				{ return dot::Loop<N-1, T>::function( values, v.values ); }
 			T& operator[]( int n ) { return values[n]; }
 
 			#define OPERATOR( OPERATION ) \
 				/* Vector of same size */ \
-				friend VectorBase<N,T> operator OPERATION( VectorBase<N,T>& v1, VectorBase<N,T>& v2 ) \
+				friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, Vector<N,T>& v2 ) \
 				{ \
-					VectorBase<N,T> result; \
+					Vector<N,T> result; \
 					for(int i(0); i < N; i++ ) \
 						result[i] = v1[i] OPERATION v2[i]; \
 					return result; \
 				} \
-				void operator OPERATION=( VectorBase<N,T>& v ) \
+				void operator OPERATION=( Vector<N,T>& v ) \
 					{ for( int i(0); i < N; i++ ) values[i] OPERATION= v[i]; } \
 				/* Scalar */ \
-				friend VectorBase<N,T> operator OPERATION( VectorBase<N,T>& v1, T s ) \
+				friend Vector<N,T> operator OPERATION( Vector<N,T>& v1, T s ) \
 				{ \
-					VectorBase<N,T> result; \
+					Vector<N,T> result; \
 					for(int i(0); i < N; i++ ) \
 						result[i] = v1[i] OPERATION s; \
 					return result; \
 				} \
-				friend VectorBase<N,T> operator OPERATION( T s, VectorBase<N,T>& v1 ) \
+				friend Vector<N,T> operator OPERATION( T s, Vector<N,T>& v1 ) \
 				{ \
 					return v1 operator s; \
 				} \
@@ -69,7 +69,6 @@ namespace linear_math
 			OPERATOR(+)
 			OPERATOR(-)
 			OPERATOR(*)
-			OPERATOR(/)
 			#undef OPERATOR
 
 			T values[N];
@@ -77,18 +76,13 @@ namespace linear_math
 	}
 	
 	template< int N, typename T = float >
-	struct Vector : local::VectorBase<N,T>
-	{
-		Vector() {}
-		Vector( local::VectorBase<N,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
-	};
+	struct Vector : local::VectorBase< Vector, N, T > {};
 
 
 	template< typename T >
-	struct Vector<4,T> : local::VectorBase<4,T>
+	struct Vector<4,T> : local::VectorBase< Vector, 4, T >
 	{
 		Vector() {}
-		Vector( local::VectorBase<4,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
 		Vector( T x, T y, T z, T w )
 		{
 			values[0] = x;
@@ -99,10 +93,9 @@ namespace linear_math
 	};
 	
 	template< typename T >
-	struct Vector<3,T> : local::VectorBase<3,T>
+	struct Vector<3,T> : local::VectorBase< Vector, 3, T >
 	{
 		Vector() {}
-		Vector( local::VectorBase<3,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
 		Vector( T x, T y, T z )
 		{
 			values[0] = x;
@@ -120,10 +113,9 @@ namespace linear_math
 	};
 	
 	template< typename T >
-	struct Vector<2,T> : local::VectorBase<2,T>
+	struct Vector<2,T> : local::VectorBase< Vector, 2, T >
 	{
 		Vector() {}
-		Vector( local::VectorBase<2,T>& v ) { memcpy( this, &v, sizeof(*this) ); }
 		Vector( T x, T y )
 		{
 			values[0] = x;

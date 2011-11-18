@@ -9,7 +9,7 @@ namespace linear_math
 {
 	namespace local
 	{
-		template < int M, int N, typename T >
+		template < template< int M, int N, typename T > class Matrix, int M, int N, typename T >
 		struct MatrixBase
 		{
 			MatrixBase() {}
@@ -37,9 +37,9 @@ namespace linear_math
 	
 			#define OPERATOR( OPERATION ) \
 				/* Matrix of same size */ \
-				friend MatrixBase<M,N,T> operator OPERATION( MatrixBase<M,N,T>& m1, MatrixBase<M,N,T>& m2 ) \
+				friend Matrix<M,N,T> operator OPERATION( Matrix<M,N,T>& m1, Matrix<M,N,T>& m2 ) \
 				{ \
-					MatrixBase<M,N,T> result; \
+					Matrix<M,N,T> result; \
 					for( int i(0); i < M; i++ ) \
 						for( int j(0); j < N; j++ ) \
 							result[i][j] = m1[i][j] OPERATION m2[i][j]; \
@@ -47,12 +47,12 @@ namespace linear_math
 					result[1] = Vector<2>( 1, 4 );\
 					return result; \
 				} \
-				void operator OPERATION=( MatrixBase<M,N,T>& m ) \
+				void operator OPERATION=( Matrix<M,N,T>& m ) \
 					{ for( int i(0); i < N; i++ ) columns[i] OPERATION##= m[i]; } \
 				/* Vector */ \
-				friend MatrixBase<M,N,T> operator OPERATION( MatrixBase<M,N,T>& m, Vector<N,T>& v ) \
+				friend Matrix<M,N,T> operator OPERATION( Matrix<M,N,T>& m, Vector<N,T>& v ) \
 				{ \
-					MatrixBase<M,N,T> result; \
+					Matrix<M,N,T> result; \
 					for( int i(0); i < N; i++ ) \
 						result[i] = m[i] OPERATION v[i]; \
 					return result; \
@@ -64,9 +64,9 @@ namespace linear_math
 			#undef OPERATOR
 	
 			/* Matrix of same size */
-			friend MatrixBase<M,N,T> operator*( MatrixBase<M,N,T>& m1, MatrixBase<M,N,T>& m2 )
+			friend Matrix<M,N,T> operator*( Matrix<M,N,T>& m1, Matrix<M,N,T>& m2 )
 			{
-				MatrixBase<M,N,T> result;
+				Matrix<M,N,T> result;
 				Vector<N,T> v[M];
 				for( int i(0); i < M; i++ )
 					for( int j(0); j < N; j++ )
@@ -76,7 +76,7 @@ namespace linear_math
 						result[i][j] = v[j].Dot( m2[i] );
 				return result;
 			}
-			void operator*=( MatrixBase<M,N,T>& m )
+			void operator*=( Matrix<M,N,T>& m )
 			{
  				Vector<N,T> v[M];
 				for( int i(0); i < M; i++ )
@@ -87,7 +87,7 @@ namespace linear_math
 						columns[i][j] = v[j].Dot( m[i] );
 			}
 			/* Vector */
-			friend MatrixBase<M,N,T> operator*( MatrixBase<M,N,T>& m, Vector<N,T>& v )
+			friend Matrix<M,N,T> operator*( Matrix<M,N,T>& m, Vector<N,T>& v )
 			{
 				Vector<N,T> result[M];
 				Vector<N,T> tempVector[M];
@@ -99,9 +99,9 @@ namespace linear_math
 				return result;
 			}
 			/* Scalar */
-			friend MatrixBase<M,N,T> operator*( MatrixBase<M,N,T>& m, T s )
+			friend Matrix<M,N,T> operator*( Matrix<M,N,T>& m, T s )
 			{
-				MatrixBase<M,N,T> result;
+				Matrix<M,N,T> result;
 				for( int i(0); i < N; i++ )
 						result[i] = m[i] * s;
 				return result;
@@ -112,18 +112,13 @@ namespace linear_math
 		};
 	}
 	template < int M, int N = M, typename T = float >
-	struct Matrix : local::MatrixBase< M, N, T >
-	{
-		Matrix() {}
-		Matrix( local::MatrixBase<M,N,T>& m ) { memcpy( this, &m, sizeof(*this) ); }
-	};
+	struct Matrix : local::MatrixBase< Matrix, M, N, T > {};
 
 
 	template < typename T >
-	struct Matrix<3,3,T> : local::MatrixBase< 3, 3, T >
+	struct Matrix<3,3,T> : local::MatrixBase< Matrix, 3, 3, T >
 	{
 		Matrix() {}
-		Matrix( local::MatrixBase<3,3,T>& m ) { memcpy( this, &m, sizeof(*this) ); }
 #define MATRIX_A columns[0][0]
 #define MATRIX_B columns[1][0]
 #define MATRIX_C columns[2][0]
@@ -164,10 +159,9 @@ namespace linear_math
 	};
 	
 	template < typename T >
-	struct Matrix<2,2,T> : local::MatrixBase< 2, 2, T > 
+	struct Matrix<2,2,T> : local::MatrixBase< Matrix, 2, 2, T > 
 	{
 		Matrix() {}
-		Matrix( local::MatrixBase<2,2,T>& m ) { memcpy( this, &m, sizeof(*this) ); }
 		Matrix<2,2,T> Inverse()
 		{
 			Matrix<2,2,T> result;
